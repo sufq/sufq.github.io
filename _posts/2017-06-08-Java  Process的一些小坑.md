@@ -69,6 +69,23 @@ private void cleanup(Process p) {
  }
 ```
 
+```java
+public static synchronized int getPid(Process p) {
+    int pid = -1;
+    try {
+        if (p.getClass().getName().equals("java.lang.UNIXProcess")) {
+            Field f = p.getClass().getDeclaredField("pid");
+            f.setAccessible(true);
+            pid = f.getInt(p);
+            f.setAccessible(false);
+        }
+    } catch (Exception e) {
+        pid = -1;
+    }
+    return pid;
+}
+```
+
 **说明：**获取`pid`的方式， 在JDK9之前只能通过反射机制， 在JDK9可以直接通过接口拿到。
 
 ## 题外话
